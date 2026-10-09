@@ -1,3 +1,4 @@
+use std::env::VarError;
 use std::path::{Path, PathBuf};
 
 use crate::args::Args;
@@ -5,18 +6,27 @@ use clap::Parser;
 
 mod args;
 mod ops;
-mod parse;
 
 fn sheets_path(args: &Args) -> anyhow::Result<PathBuf> {
-    args.sheets_path
-        .as_ref()
-        .map(|path| Ok(path.clone()))
-        .unwrap_or_else(|| {
-            let cheat_path = std::env::var("CHEAT_PATH").unwrap_or("~/.config/cheat".into());
+    if let Some(sheets_path) = args.sheets_path.as_ref() {
+        return Ok(sheets_path.clone());
+    }
 
-            let cheat_path = Path::new(&cheat_path);
-            Ok(cheat_path.join("sheets/"))
-        })
+    match std::env::var("CHEAT_PATH") {
+        Ok(cheat_path) => {
+            if !cheat_path.is_empty() {
+                let cheat_path = Path::new(&cheat_path);
+                return Ok(cheat_path.join("sheets/"));
+            }
+        }
+        Err(VarError::NotPresent) => {}
+        Err(err) => {
+            anyhow::bail!(err);
+        }
+    }
+
+    let config_dir = dirs::config_dir().ok_or(anyhow::anyhow!("Failed to retrieve config directory"))?;
+    Ok(config_dir.join("cheat/sheets/"))
 }
 
 pub struct SectionPath {
@@ -33,7 +43,7 @@ impl TryFrom<&str> for SectionPath {
         fn is_invalid_segment(segment: &&str) -> bool {
             segment.chars().any(char::is_control)
         }
-        if let Some(invalid_segment) = segments.find(is_invalid_segment) {
+        if let Some(invalid_segment) = segments.clone().find(is_invalid_segment) {
             anyhow::bail!("Invalid section name '{}'", invalid_segment);
         }
 
