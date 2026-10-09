@@ -15,7 +15,7 @@ fn sheets_path(args: &Args) -> anyhow::Result<PathBuf> {
             let cheat_path = std::env::var("CHEAT_PATH").unwrap_or("~/.config/cheat".into());
 
             let cheat_path = Path::new(&cheat_path);
-            Ok(cheat_path.join("sheets"))
+            Ok(cheat_path.join("sheets/"))
         })
 }
 

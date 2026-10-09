@@ -1,8 +1,13 @@
 [package]
 name = "cheat"
 version = "0.1.0"
+authors = ["leolbe"]
 edition = "2024"
+description = "Terminal cheatsheet viewer for text-based cheatsheets"
 
 [dependencies]
 anyhow = "1.0.102"
 clap = { version = "4.6.1", features = ["derive"] }
+rayon = { version = "1.12.0", default-features = false }
+serde = { version = "1.0.229", features = ["derive"] }
+toml = "1.1.6"

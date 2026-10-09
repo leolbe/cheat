@@ -4,8 +4,8 @@ Display custom cheatsheets.
 
 ## Usage
 
-Will look for cheatsheets at the path specified in the environment variable `CHEAT_PATH`, or by
-default, in `~/.config/cheat/`. See [Cheatsheet format](#cheatsheet-format) for more info.
+Will look for cheatsheets at the path specified in `$CHEAT_PATH/sheets/`, or by
+default, in `~/.config/cheat/sheets/`. See [Cheatsheet format](#cheatsheet-format) for more info.
 
 ### List cheatsheets:
 
