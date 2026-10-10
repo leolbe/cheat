@@ -1,10 +1,18 @@
+use crate::parse::{Entry, Section};
 use crate::SectionPath;
 use rayon::iter::IntoParallelIterator;
 use rayon::iter::ParallelIterator;
 use std::path::Path;
 
-pub fn is_toml_file(file_name: &str) -> bool {
-    file_name.ends_with(".toml")
+fn strip_toml_extension(mut file_name: String) -> Option<String> {
+    const FILE_EXTENSION: &str = ".toml";
+
+    if file_name.ends_with(FILE_EXTENSION) {
+        file_name.truncate(file_name.len() - FILE_EXTENSION.len());
+        Some(file_name)
+    } else {
+        None
+    }
 }
 
 pub fn list_sheets(sheets_dir: &Path) -> anyhow::Result<()> {
@@ -22,9 +30,11 @@ pub fn list_sheets(sheets_dir: &Path) -> anyhow::Result<()> {
             if file_type.is_file() {
                 let file_name = match entry.file_name().to_str() {
                     Some(name) => name.to_string(),
-                    None => return Some(Err(anyhow::anyhow!("File name contains invalid unicode"))),
+                    None => {
+                        return Some(Err(anyhow::anyhow!("File name contains invalid unicode")));
+                    }
                 };
-                is_toml_file(&file_name).then_some(Ok(file_name))
+                strip_toml_extension(file_name).map(Ok)
             } else {
                 None
             }
@@ -43,5 +53,30 @@ pub fn list_sheets(sheets_dir: &Path) -> anyhow::Result<()> {
 }
 
 pub fn print_sheet(sheets_dir: &Path, section_path: &SectionPath) -> anyhow::Result<()> {
-    todo!()
+    let sheet_path = sheets_dir.join(format!("{}.toml", section_path.sheet));
+    let sheet_content = std::fs::read_to_string(sheet_path)?;
+    let sheet: Section = toml::from_str(&sheet_content)?;
+
+    let mut section = &sheet;
+    for path_segment in &section_path.segments {
+        let Some(Entry::Subsection(subsection)) = section.get(path_segment) else {
+            anyhow::bail!("No subsection with name '{}'", path_segment);
+        };
+        section = subsection;
+    }
+
+    let text_entries = section
+        .iter()
+        .filter_map(|(key, entry)| entry.as_text().map(|text| (key, text)));
+
+    let column_width = text_entries
+        .clone()
+        .map(|(key, _)| key.len())
+        .max()
+        .unwrap_or(0);
+
+    for (key, entry) in text_entries {
+        println!("{:column_width$} {}", key, entry);
+    }
+    Ok(())
 }

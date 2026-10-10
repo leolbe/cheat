@@ -6,6 +6,7 @@ use clap::Parser;
 
 mod args;
 mod ops;
+mod parse;
 
 fn sheets_path(args: &Args) -> anyhow::Result<PathBuf> {
     if let Some(sheets_path) = args.sheets_path.as_ref() {
@@ -29,6 +30,7 @@ fn sheets_path(args: &Args) -> anyhow::Result<PathBuf> {
     Ok(config_dir.join("cheat/sheets/"))
 }
 
+#[derive(Clone, Debug)]
 pub struct SectionPath {
     sheet: Box<str>,
     segments: Box<[Box<str>]>,
