@@ -1,15 +1,14 @@
 pkgname=cheat
 pkgver=0.1.0
 pkgrel=1
-pkgdesc=''
+pkgdesc='Terminal cheatsheet viewer for text-based cheatsheets'
 license=('MIT')
 makedepends=('cargo')
-depends=('libgcc' 'glibc')
-arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+arch=('i686' 'x86_64')
 
 prepare() {
     export RUSTUP_TOOLCHAIN=stable
-    cargo fetch --locked --target host-tuple
+    cargo fetch --locked
 }
 
 build() {
