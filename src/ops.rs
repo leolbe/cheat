@@ -1,4 +1,5 @@
 use crate::SectionPath;
+use crate::args::Args;
 use crate::parse::{Entry, Section};
 use rayon::iter::IntoParallelIterator;
 use rayon::iter::ParallelIterator;
@@ -90,7 +91,7 @@ pub fn print_section(section: &Section, section_name: &str, depth: usize, recurs
 pub fn print_sheet(
     sheets_dir: &Path,
     section_path: &SectionPath,
-    recursive: bool,
+    args: &Args,
 ) -> anyhow::Result<()> {
     let sheet_path = sheets_dir.join(format!("{}.toml", section_path.sheet));
     let sheet_content = std::fs::read_to_string(sheet_path)?;
@@ -106,6 +107,6 @@ pub fn print_sheet(
         section_name = path_segment;
     }
 
-    print_section(section, &section_name, 0, recursive);
+    print_section(section, &section_name, 0, !args.section_only);
     Ok(())
 }

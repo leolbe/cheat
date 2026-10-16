@@ -13,7 +13,7 @@ pub struct Args {
     #[arg(short = 'p')]
     pub sheets_path: Option<PathBuf>,
 
-    /// Recursively print all subsections
-    #[arg(short = 'r')]
-    pub recursive: bool,
+    /// Print only the specified section, not its descendants
+    #[arg(short = 's')]
+    pub section_only: bool,
 }

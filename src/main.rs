@@ -64,9 +64,9 @@ fn main() -> anyhow::Result<()> {
 
     let sheets_path = sheets_path(&args)?;
 
-    if let Some(section_path) = args.section {
+    if let Some(section_path) = &args.section {
         let section_path = SectionPath::try_from(section_path.as_str())?;
-        ops::print_sheet(&sheets_path, &section_path, args.recursive)?;
+        ops::print_sheet(&sheets_path, &section_path, &args)?;
     } else {
         ops::list_sheets(&sheets_path)?;
     }

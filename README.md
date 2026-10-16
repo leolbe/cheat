@@ -9,11 +9,11 @@ default, in `~/.config/cheat/sheets/`. See [Cheatsheet format](#cheatsheet-forma
 
 ### List cheatsheets:
 
-`cheat [-r] [-p <path>]`
+`cheat [-s] [-p <path>]`
 
 ### Display cheatsheet/section:
 
-`cheat [-r] [-p <path>] <section-path>`
+`cheat [-s] [-p <path>] <section-path>`
 
 ### Help:
 
@@ -21,7 +21,7 @@ default, in `~/.config/cheat/sheets/`. See [Cheatsheet format](#cheatsheet-forma
 
 ### Arguments
 
-`-r`: Recursively print all subsections
+`-s`: Print only the specified section, not its descendants
 
 `-p <path>`: Look for cheatsheets in `path` instead of the default path.
 
