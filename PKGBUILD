@@ -1,5 +1,5 @@
 pkgname=cheat
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc='Terminal cheatsheet viewer for text-based cheatsheets'
 license=('MIT')
